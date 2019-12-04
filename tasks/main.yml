@@ -1,0 +1,39 @@
+---
+- name: "Create CA Root Certificate"
+  block:
+    - name: "Copy Root CA key"
+      copy:
+        content: "{{ certificate_authority_key }}"
+        dest: "{{ certificates_directory }}/{{ certificate_authority_key_filename }}"
+        owner: root
+        group: root
+        mode: 0644
+    - name: "Copy Root CA cert"
+      copy:
+        content: "{{ certificate_authority_cert }}"
+        dest: "{{ certificates_directory }}/{{ certificate_authority_cert_filename }}"
+        owner: root
+        group: root
+        mode: 0644
+  when:
+    - certificate_authority_key is defined
+    - certificate_authority_cert is defined
+
+- name: "Generate client certificates"
+  block:
+    - name: "Generate key for client certificate"
+      shell: openssl genrsa -out {{ certificates_directory }}/{{ client_key_filename }} 2048
+    - name: "Generate Certificate request for client"
+      shell: openssl req -new -key {{ certificates_directory }}/{{ client_key_filename }} -out {{ certificates_directory }}/{{ client_csr_filename }} -subj "{{ certificate_attributes }}"
+    - name: "Issue certificate for client"
+      shell: openssl x509 -req -in {{ certificates_directory }}/{{ client_csr_filename }} -CA {{ certificates_directory }}/{{ certificate_authority_cert_filename }} -CAkey {{ certificates_directory }}/{{ certificate_authority_key_filename }} -CAcreateserial -out {{ certificates_directory }}/{{ client_cert_filename }} -days {{ certificate_expiry_days }} -sha256
+  when:
+    - certificate_authority_key is defined
+    - certificate_authority_cert is defined
+
+- name: "Delete Root CA key"
+  file:
+    path: "{{item}}"
+    state: absent
+  with_items:
+    - "{{ certificates_directory }}/{{ certificate_authority_key_filename }}"

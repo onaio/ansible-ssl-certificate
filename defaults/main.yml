@@ -1,0 +1,23 @@
+certificate_authority_key:
+certificate_authority_cert:
+
+# the path to the directory in which to save the certificates
+certificates_directory:  "/tmp"  # no trailing slash
+
+# the file names of the certificate authority certificate files
+certificate_authority_key_filename: "cacert.key"
+certificate_authority_cert_filename: "cacert.pem"
+
+# the filenames of the client certificates
+client_key_filename: "client.key"
+client_csr_filename: "client.csr"
+client_cert_filename: "client.pem"
+
+# the validity period in days of the certificates
+certificate_expiry_days: 3650
+
+# certificate attributes
+## take great care with this variable.  It should match the value used when
+## generating the root certificate.  In case of problems try and set only the
+## lower levels e.g. `/O=Some Company` only
+certificate_attributes: "/C=Some Country/ST=Some State/L=Some City/O=Some Company/OU=Some Department/CN=example.com"

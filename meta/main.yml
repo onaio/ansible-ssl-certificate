@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: ssl-certificate
+  author: Ona Engineering
+  description: Creates TLS client certificates using a certificate authority.
+  company: Ona Systems Inc
+  license: Apache v2.0
+  min_ansible_version: 2.4
+  platforms:
+    - name: Ubuntu
+      versions:
+        - 16.04
+        - 18.04
+  galaxy_tags:
+    - ssl
+    - tls
+
+dependencies: []
