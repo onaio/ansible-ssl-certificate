@@ -21,3 +21,8 @@ certificate_expiry_days: 3650
 ## generating the root certificate.  In case of problems try and set only the
 ## lower levels e.g. `/O=Some Company` only
 certificate_attributes: "/C=Some Country/ST=Some State/L=Some City/O=Some Company/OU=Some Department/CN=example.com"
+
+# file ownership and permissions
+certificates_system_owner: "root"
+certificates_system_group: "root"
+certificates_file_mode: 0640

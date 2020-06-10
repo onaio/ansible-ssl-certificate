@@ -8,6 +8,7 @@
         owner: root
         group: root
         mode: 0644
+
     - name: "Copy Root CA cert"
       copy:
         content: "{{ certificate_authority_cert }}"
@@ -23,10 +24,24 @@
   block:
     - name: "Generate key for client certificate"
       shell: openssl genrsa -out {{ certificates_directory }}/{{ client_key_filename }} 2048
+
     - name: "Generate Certificate request for client"
       shell: openssl req -new -key {{ certificates_directory }}/{{ client_key_filename }} -out {{ certificates_directory }}/{{ client_csr_filename }} -subj "{{ certificate_attributes }}"
+
     - name: "Issue certificate for client"
       shell: openssl x509 -req -in {{ certificates_directory }}/{{ client_csr_filename }} -CA {{ certificates_directory }}/{{ certificate_authority_cert_filename }} -CAkey {{ certificates_directory }}/{{ certificate_authority_key_filename }} -CAcreateserial -out {{ certificates_directory }}/{{ client_cert_filename }} -days {{ certificate_expiry_days }} -sha256
+
+    - name: "Set ownership for the files"
+      file:
+        path: "{{ item }}"
+        owner: "{{ certificates_system_owner }}"
+        group: "{{ certificates_system_group }}"
+        mode: "{{ certificates_file_mode }}"
+      with_items:
+        - "{{ certificates_directory }}/{{ client_csr_filename }}"
+        - "{{ certificates_directory }}/{{ client_key_filename }}"
+        - "{{ certificates_directory }}/{{ client_cert_filename }}"
+        - "{{ certificates_directory }}/{{ certificate_authority_cert_filename }}"
   when:
     - certificate_authority_key is defined
     - certificate_authority_cert is defined
