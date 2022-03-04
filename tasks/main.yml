@@ -22,6 +22,11 @@
 
 - name: "Generate client certificates"
   block:
+    - name: "Ensure openssl is installed"
+      package:
+        name: openssl
+        state: present
+
     - name: "Generate key for client certificate"
       shell: openssl genrsa -out {{ certificates_directory }}/{{ client_key_filename }} 2048
 
